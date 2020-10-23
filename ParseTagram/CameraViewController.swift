@@ -14,6 +14,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     @IBOutlet var captionText: UITextField!
     @IBOutlet var errorNoticeLabel: UILabel!
     @IBAction func submitTapped(_ sender: UIButton) {
+        
         let post = PFObject(className: "Posts")
         if let imageData = imageView.image?.pngData(), let pfImageData = PFFileObject(data: imageData) {
             post["image"] = pfImageData
@@ -28,7 +29,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         post.saveInBackground { (success, error) in
             if success {
                 print("saved")
-                self.dismiss(animated: true, completion: nil)
+                self.navigationController?.popViewController(animated: true)
             } else {
                 self.errorNoticeLabel.text = "Unable to complete your request"
                 
