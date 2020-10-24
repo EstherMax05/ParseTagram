@@ -24,13 +24,13 @@ class LoadingTableViewCell: UITableViewCell {
     
     func startLoading() {
         loadingIndicator.startAnimating()
-        noPostsLabel.text = "Loading posts..."
+        noPostsLabel.text = LoadingCellConstansts.loadingText
     }
     
     func doneLoading() {
         loadingIndicator.hidesWhenStopped = true
         loadingIndicator.stopAnimating()
-        noPostsLabel.text = "No posts to load"
+        noPostsLabel.text = LoadingCellConstansts.doneLoadingText
     }
 
 }

@@ -18,11 +18,11 @@ class FeedTableViewCell: UITableViewCell {
         super.awakeFromNib()
         // Initialization code
         profileImageView.layer.cornerRadius = profileImageView.frame.height/2
+        profileImageView.layer.borderWidth = FeedTableViewCellConstants.imageBorderWidth
+        profileImageView.layer.borderColor = FeedTableViewCellConstants.imageBorderColor
     }
     
     func load(profileImage: UIImage?, username: String, postImage: UIImage, captionText: String?) {
-        print("fasdfksajlajksd")
-        print("fasdfksajlajksd: username ", username)
         if let image = profileImage{
             profileImageView.image = image
         }

@@ -9,31 +9,20 @@ import UIKit
 import Parse
 
 class CameraViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    var feedModel : FeedModel!
 
     @IBOutlet var imageView: UIImageView!
     @IBOutlet var captionText: UITextField!
     @IBOutlet var errorNoticeLabel: UILabel!
     @IBAction func submitTapped(_ sender: UIButton) {
-        
-        let post = PFObject(className: "Posts")
-        if let imageData = imageView.image?.pngData(), let pfImageData = PFFileObject(data: imageData) {
-            post["image"] = pfImageData
-        }
-        if let caption = captionText.text{
-            post["caption"] = caption
-        }
-        if let author = PFUser.current(){
-            post["author"] =  author
-        }
-        
-        post.saveInBackground { (success, error) in
-            if success {
-                print("saved")
+        if let image = imageView.image, let name = feedModel.getUserName() {
+            let post = Post(image: image, caption: captionText.text, author: User(name: name, picture: nil))
+            let storeResult = feedModel.storePosts(post)
+            if storeResult.success{
                 self.navigationController?.popViewController(animated: true)
             } else {
-                self.errorNoticeLabel.text = "Unable to complete your request"
-                
-                print("failed")
+                self.errorNoticeLabel.text = genericFailMessage
             }
         }
     }
@@ -59,21 +48,21 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         
     }
     func scaleImage(toSize newSize: CGSize, image: UIImage) -> UIImage? {
-            var newImage: UIImage?
-            let newRect = CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height).integral
-            UIGraphicsBeginImageContextWithOptions(newSize, false, 0)
-            if let context = UIGraphicsGetCurrentContext(), let cgImage = image.cgImage {
-                context.interpolationQuality = .high
-                let flipVertical = CGAffineTransform(a: 1, b: 0, c: 0, d: -1, tx: 0, ty: newSize.height)
-                context.concatenate(flipVertical)
-                context.draw(cgImage, in: newRect)
-                if let img = context.makeImage() {
-                    newImage = UIImage(cgImage: img)
-                }
-                UIGraphicsEndImageContext()
+        var newImage: UIImage?
+        let newRect = CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height).integral
+        UIGraphicsBeginImageContextWithOptions(newSize, false, 0)
+        if let context = UIGraphicsGetCurrentContext(), let cgImage = image.cgImage {
+            context.interpolationQuality = .high
+            let flipVertical = CGAffineTransform(a: 1, b: 0, c: 0, d: -1, tx: 0, ty: newSize.height)
+            context.concatenate(flipVertical)
+            context.draw(cgImage, in: newRect)
+            if let img = context.makeImage() {
+                newImage = UIImage(cgImage: img)
             }
-            return newImage
+            UIGraphicsEndImageContext()
         }
+        return newImage
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         imageView.isUserInteractionEnabled = true

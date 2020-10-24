@@ -23,7 +23,7 @@ class LoginViewController: UIViewController {
         if let username = usernameTextField.text, let password = passwordTextField.text {
             login(with: username, and: password)
         } else {
-            errorLabel.text = "To sign in, please type in your username and password"
+            errorLabel.text = LoginViewControllerConstants.signInErrorText
         }
     }
     @IBAction func signUpTapped(_ sender: UIButton) {
@@ -31,7 +31,7 @@ class LoginViewController: UIViewController {
         if let username = usernameTextField.text, let password = passwordTextField.text {
             createUser(with: username, and: password)
         } else {
-            errorLabel.text = "To sign up, please type in your username and password"
+            errorLabel.text = LoginViewControllerConstants.signUpErrorText
         }
     }
     override func viewDidLoad() {
@@ -42,44 +42,34 @@ class LoginViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        if UserDefaults.standard.bool(forKey: "loggedIn") {
-            self.performSegue(withIdentifier: "homeScreenSegue", sender: nil)
-        }
-    }
-    
-    func createUser(with username: String, and password: String) {
-        let user = PFUser()
-        user.username = username
-        user.password = password
-        user.signUpInBackground { (succeeded, error) in
-            if let error = error as NSError? {
-              let errorString = error.userInfo["error"] as? NSString
-              // Show the errorString somewhere and let the user try again.
-              print("Error! ", errorString)
-                self.errorLabel.text = errorString as String?
-            } else {
-              // Hooray! Let them use the app now.
-                self.storeUserLoginState()
-                self.performSegue(withIdentifier: "homeScreenSegue", sender: nil)
-            }
+        if UserDefaults.standard.bool(forKey: LoginViewControllerConstants.loggedInDefaultKey) {
+            self.performSegue(withIdentifier: LoginViewControllerConstants.homeScreenSegue, sender: nil)
         }
     }
     
     func storeUserLoginState(isLoggedIn: Bool = true) {
-        UserDefaults.standard.set(isLoggedIn, forKey: "loggedIn")
+        UserDefaults.standard.set(isLoggedIn, forKey: LoginViewControllerConstants.loggedInDefaultKey)
     }
     
     func login(with username: String, and password: String) {
-        PFUser.logInWithUsername(inBackground: username, password: password) { (user, error) in
-            if user != nil {
-              // Do stuff after successful login.
-                self.storeUserLoginState()
-                self.performSegue(withIdentifier: "homeScreenSegue", sender: nil)
-            } else {
-              // The login failed. Check error to see why.
-                print("Error! ", error?.localizedDescription)
-                self.errorLabel.text = error?.localizedDescription as String?
-            }
+        let loginState = AccountModel.login(with: username, and: password)
+        if loginState.success {
+            self.storeUserLoginState()
+            self.performSegue(withIdentifier: LoginViewControllerConstants.homeScreenSegue, sender: nil)
+        } else {
+            print(ParseConstants.errorbasis, loginState.error)
+            self.errorLabel.text = loginState.error
+        }
+    }
+    
+    func createUser(with username: String, and password: String) {
+        let createUserState = AccountModel.createUser(with: username, and: password)
+        if createUserState.success {
+            self.storeUserLoginState()
+            self.performSegue(withIdentifier: LoginViewControllerConstants.homeScreenSegue, sender: nil)
+        } else {
+            print(ParseConstants.errorbasis, createUserState.error)
+            self.errorLabel.text = createUserState.error
         }
     }
     

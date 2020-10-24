@@ -10,7 +10,6 @@
 		1BD59B62A469566F07D126F3 /* Pods_ParseTagramTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF5C782F23C637C038103E2A /* Pods_ParseTagramTests.framework */; };
 		1D62CA1F253BD5240000F656 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D62CA1E253BD5240000F656 /* AppDelegate.swift */; };
 		1D62CA21253BD5240000F656 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D62CA20253BD5240000F656 /* SceneDelegate.swift */; };
-		1D62CA23253BD5240000F656 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D62CA22253BD5240000F656 /* ViewController.swift */; };
 		1D62CA26253BD5240000F656 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1D62CA24253BD5240000F656 /* Main.storyboard */; };
 		1D62CA28253BD5250000F656 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1D62CA27253BD5250000F656 /* Assets.xcassets */; };
 		1D62CA2B253BD5250000F656 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1D62CA29253BD5250000F656 /* LaunchScreen.storyboard */; };
@@ -22,6 +21,8 @@
 		1D9AB7A6254339A300DB267C /* FeedTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D9AB7A5254339A300DB267C /* FeedTableViewCell.swift */; };
 		1D9AB7AB2543509400DB267C /* LoadingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D9AB7AA2543509400DB267C /* LoadingTableViewCell.swift */; };
 		1D9AB7B02543622200DB267C /* FeedModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D9AB7AF2543622200DB267C /* FeedModel.swift */; };
+		1D9AB7B52543A6B100DB267C /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D9AB7B42543A6B100DB267C /* Constants.swift */; };
+		1D9AB7BA2543B88400DB267C /* AccountModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D9AB7B92543B88400DB267C /* AccountModel.swift */; };
 		9DBE08E9B20DCF0FB09BE826 /* Pods_ParseTagram_ParseTagramUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B80AA5699493C6CA6127F8D /* Pods_ParseTagram_ParseTagramUITests.framework */; };
 		DA23A8B5FD84BD865E9DC1B2 /* Pods_ParseTagram.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AFF57C5403FA5F2D29D79193 /* Pods_ParseTagram.framework */; };
 /* End PBXBuildFile section */
@@ -48,7 +49,6 @@
 		1D62CA1B253BD5240000F656 /* ParseTagram.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ParseTagram.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1D62CA1E253BD5240000F656 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1D62CA20253BD5240000F656 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		1D62CA22253BD5240000F656 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		1D62CA25253BD5240000F656 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		1D62CA27253BD5250000F656 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1D62CA2A253BD5250000F656 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -65,6 +65,8 @@
 		1D9AB7A5254339A300DB267C /* FeedTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedTableViewCell.swift; sourceTree = "<group>"; };
 		1D9AB7AA2543509400DB267C /* LoadingTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingTableViewCell.swift; sourceTree = "<group>"; };
 		1D9AB7AF2543622200DB267C /* FeedModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedModel.swift; sourceTree = "<group>"; };
+		1D9AB7B42543A6B100DB267C /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		1D9AB7B92543B88400DB267C /* AccountModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountModel.swift; sourceTree = "<group>"; };
 		6D140AB882500D1809CA49E0 /* Pods-ParseTagram.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ParseTagram.release.xcconfig"; path = "Target Support Files/Pods-ParseTagram/Pods-ParseTagram.release.xcconfig"; sourceTree = "<group>"; };
 		7E29F22C1C11F912BD5ECB68 /* Pods-ParseTagramTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ParseTagramTests.debug.xcconfig"; path = "Target Support Files/Pods-ParseTagramTests/Pods-ParseTagramTests.debug.xcconfig"; sourceTree = "<group>"; };
 		ADF93A24F95BC274BF8ACF6D /* Pods-ParseTagramTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ParseTagramTests.release.xcconfig"; path = "Target Support Files/Pods-ParseTagramTests/Pods-ParseTagramTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -130,14 +132,11 @@
 			children = (
 				1D62CA1E253BD5240000F656 /* AppDelegate.swift */,
 				1D62CA20253BD5240000F656 /* SceneDelegate.swift */,
-				1D62CA22253BD5240000F656 /* ViewController.swift */,
 				1D62CA24253BD5240000F656 /* Main.storyboard */,
-				1D9AB7AA2543509400DB267C /* LoadingTableViewCell.swift */,
-				1D9AB7A0254338CB00DB267C /* FeedViewController.swift */,
-				1D9AB7AF2543622200DB267C /* FeedModel.swift */,
-				1D9AB7A5254339A300DB267C /* FeedTableViewCell.swift */,
-				1D62CA6B253BECF20000F656 /* CameraViewController.swift */,
-				1D62CA5D253BE12D0000F656 /* LoginViewController.swift */,
+				1D9AB7C02543BE5B00DB267C /* Cells */,
+				1D9AB7BE2543BDFF00DB267C /* ViewControllers */,
+				1D9AB7BF2543BE2000DB267C /* Models */,
+				1D9AB7B42543A6B100DB267C /* Constants.swift */,
 				1D62CA27253BD5250000F656 /* Assets.xcassets */,
 				1D62CA29253BD5250000F656 /* LaunchScreen.storyboard */,
 				1D62CA2C253BD5250000F656 /* Info.plist */,
@@ -161,6 +160,34 @@
 				1D62CA42253BD5250000F656 /* Info.plist */,
 			);
 			path = ParseTagramUITests;
+			sourceTree = "<group>";
+		};
+		1D9AB7BE2543BDFF00DB267C /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				1D9AB7A0254338CB00DB267C /* FeedViewController.swift */,
+				1D62CA6B253BECF20000F656 /* CameraViewController.swift */,
+				1D62CA5D253BE12D0000F656 /* LoginViewController.swift */,
+			);
+			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		1D9AB7BF2543BE2000DB267C /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				1D9AB7B92543B88400DB267C /* AccountModel.swift */,
+				1D9AB7AF2543622200DB267C /* FeedModel.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		1D9AB7C02543BE5B00DB267C /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				1D9AB7AA2543509400DB267C /* LoadingTableViewCell.swift */,
+				1D9AB7A5254339A300DB267C /* FeedTableViewCell.swift */,
+			);
+			path = Cells;
 			sourceTree = "<group>";
 		};
 		4F54B8B9871064AD1EFDC7B8 /* Pods */ = {
@@ -428,9 +455,10 @@
 				1D9AB7B02543622200DB267C /* FeedModel.swift in Sources */,
 				1D62CA6C253BECF20000F656 /* CameraViewController.swift in Sources */,
 				1D9AB7A6254339A300DB267C /* FeedTableViewCell.swift in Sources */,
-				1D62CA23253BD5240000F656 /* ViewController.swift in Sources */,
+				1D9AB7B52543A6B100DB267C /* Constants.swift in Sources */,
 				1D62CA1F253BD5240000F656 /* AppDelegate.swift in Sources */,
 				1D9AB7A1254338CB00DB267C /* FeedViewController.swift in Sources */,
+				1D9AB7BA2543B88400DB267C /* AccountModel.swift in Sources */,
 				1D9AB7AB2543509400DB267C /* LoadingTableViewCell.swift in Sources */,
 				1D62CA21253BD5240000F656 /* SceneDelegate.swift in Sources */,
 			);

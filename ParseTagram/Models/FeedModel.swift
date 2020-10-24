@@ -25,17 +25,17 @@ struct User {
     
     init(name: String, picture: UIImage?) {
         self.name = name
-        self.picture = picture ?? UIImage.init(named: "person.circle.fill")
+        self.picture = picture ?? UIImage.init(named: defaultImageName)
     }
 }
 
 class FeedModel {
     var posts = [Post]()
-    let query = PFQuery(className: "Posts")
+    let query = PFQuery(className: ParseConstants.postsClass)
     var user: User!
     
-    func getPosts(queryLimit: Int = 20) {
-        query.includeKey("author")
+    func getPosts(queryLimit: Int = ParseConstants.queryLimit) {
+        query.includeKey(ParseConstants.authorKey)
         query.limit = queryLimit
         query.findObjectsInBackground { (pfPosts, error) in
             if let error = error {
@@ -45,75 +45,46 @@ class FeedModel {
                 if let pfPosts = pfPosts {
                     var tempPosts = [Post]()
                     for pfPost in pfPosts {
-                        let postCaption = pfPost["caption"] as? String
-                        let postAuthor = pfPost["author"] as! PFUser
+                        let postCaption = pfPost[ParseConstants.captionKey] as? String
+                        let postAuthor = pfPost[ParseConstants.authorKey] as! PFUser
                         // self.user = User(name: postAuthor.username!, picture: nil)
-                        let postImageFile = pfPost["image"] as! PFFileObject
+                        let postImageFile = pfPost[ParseConstants.imageKey] as! PFFileObject
                         if let postImageUrl = postImageFile.url {
                             let postImage = self.getImage(url: postImageUrl)
                             tempPosts.append(Post(image: postImage!, caption: postCaption, author: User(name: postAuthor.username!, picture: nil)))
                         } else{
-                            print("postless post found")
+                            print(ParseConstants.errorString1)
                         }
                     }
                     self.posts = tempPosts
+                    NotificationCenter.default.post(name: Notification.Name(getPostsNotificationKey), object: nil)
                 }
             }
         }
     }
     
-    func storePosts(_ post: Post) -> Bool {
+    func storePosts(_ post: Post) -> (error: String?, success: Bool) {
         var returnVal = true
-        let pfPost = PFObject(className: "Posts")
+        var errorText : String?
+        let pfPost = PFObject(className: ParseConstants.postsClass)
         
         if let imageData = post.image.pngData(), let pfImageData = PFFileObject(data: imageData) {
-            pfPost["image"] = pfImageData
+            pfPost[ParseConstants.imageKey] = pfImageData
         }
         if let caption = post.caption{
-            pfPost["caption"] = caption
+            pfPost[ParseConstants.captionKey] = caption
         }
         if let author = PFUser.current(){
-            pfPost["author"] =  author
+            pfPost[ParseConstants.authorKey] =  author
         }
         
         pfPost.saveInBackground { (success, error) in
             if !success {
                 returnVal = false
-            }
-        }
-        return returnVal
-    }
-    
-    func createUser(with username: String, and password: String) -> (String?, Bool) {
-        var errorText: String?
-        var wasSuccessful = true
-        let user = PFUser()
-        user.username = username
-        user.password = password
-        user.signUpInBackground { (succeeded, error) in
-            if let error = error as NSError? {
-              let errorString = error.userInfo["error"] as? NSString
-              // Show the errorString somewhere and let the user try again.
-              print("Error! ", errorString)
-                errorText = errorString as String?
-                wasSuccessful = false
-            }
-        }
-        return (errorText, wasSuccessful)
-    }
-    
-    func login(with username: String, and password: String) -> (String?, Bool)  {
-        var errorText: String?
-        var wasSuccessful = true
-        PFUser.logInWithUsername(inBackground: username, password: password) { (user, error) in
-            if user == nil {
-              // The login failed. Check error to see why.
-                print("Error! ", error?.localizedDescription)
                 errorText = error?.localizedDescription as String?
-                wasSuccessful = false
-            }
+            } else { self.getPosts() }
         }
-        return (errorText, wasSuccessful)
+        return (error: errorText, success: returnVal)
     }
     
     private func getImage(data: Data)->UIImage?{
@@ -138,6 +109,10 @@ class FeedModel {
     
     func getNumberOfPosts() -> Int {
         return posts.count
+    }
+    
+    func getUserName() -> String? {
+        return PFUser.current()?.username
     }
     
     init(){
