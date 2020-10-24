@@ -23,4 +23,16 @@ The following **bonus** features are implemented:
 
 Here's a walkthrough of implemented user stories:
 
+Post Image: 
+
 <img src='https://github.com/EstherMax05/ParseTagram/blob/main/post_image.gif' width='' alt='Video Walkthrough' />
+
+Sign In:
+<img src='https://github.com/EstherMax05/ParseTagram/blob/main/parsete_signIn.gif' width='' alt='Video Walkthrough' />
+
+Sign Up:
+<img src='https://github.com/EstherMax05/ParseTagram/blob/main/sign_up.gif' width='' alt='Video Walkthrough' />
+
+Feed:
+<img src='https://github.com/EstherMax05/ParseTagram/blob/main/scroll.gif' width='' alt='Video Walkthrough' />
+
