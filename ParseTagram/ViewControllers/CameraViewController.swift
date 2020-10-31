@@ -18,7 +18,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     @IBAction func submitTapped(_ sender: UIButton) {
         if let image = imageView.image, let name = feedModel.getUserName() {
             let post = Post(image: image, caption: captionText.text, author: User(name: name, picture: nil))
-            let storeResult = feedModel.storePosts(post)
+            let storeResult = feedModel.storePost(post)
             if storeResult.success{
                 self.navigationController?.popViewController(animated: true)
             } else {
@@ -26,6 +26,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
             }
         }
     }
+    
     @IBAction func didTapImageView(_ sender: UITapGestureRecognizer) {
         let picker = UIImagePickerController()
         picker.delegate = self
@@ -39,30 +40,16 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         
         present(picker, animated: true, completion: nil)
     }
+    
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         let image = info[.editedImage] as! UIImage
         let size = CGSize(width: 300, height: 300)
-        let scaledImage = scaleImage(toSize: size, image: image)
+        let scaledImage = Utility.scaleImage(toSize: size, image: image)
         imageView.image = scaledImage
         dismiss(animated: true, completion: nil)
         
     }
-    func scaleImage(toSize newSize: CGSize, image: UIImage) -> UIImage? {
-        var newImage: UIImage?
-        let newRect = CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height).integral
-        UIGraphicsBeginImageContextWithOptions(newSize, false, 0)
-        if let context = UIGraphicsGetCurrentContext(), let cgImage = image.cgImage {
-            context.interpolationQuality = .high
-            let flipVertical = CGAffineTransform(a: 1, b: 0, c: 0, d: -1, tx: 0, ty: newSize.height)
-            context.concatenate(flipVertical)
-            context.draw(cgImage, in: newRect)
-            if let img = context.makeImage() {
-                newImage = UIImage(cgImage: img)
-            }
-            UIGraphicsEndImageContext()
-        }
-        return newImage
-    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         imageView.isUserInteractionEnabled = true

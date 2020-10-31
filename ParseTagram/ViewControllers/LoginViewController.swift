@@ -20,8 +20,8 @@ class LoginViewController: UIViewController {
     
     @IBAction func signInTapped(_ sender: UIButton) {
         errorLabel.text = ""
-        if let username = usernameTextField.text, let password = passwordTextField.text {
-            login(with: username, and: password)
+        if let username = usernameTextField.text, let password = passwordTextField.text{
+            AccountModel.login(with: username, and: password)
         } else {
             errorLabel.text = LoginViewControllerConstants.signInErrorText
         }
@@ -29,7 +29,7 @@ class LoginViewController: UIViewController {
     @IBAction func signUpTapped(_ sender: UIButton) {
         errorLabel.text = ""
         if let username = usernameTextField.text, let password = passwordTextField.text {
-            createUser(with: username, and: password)
+            AccountModel.createUser(with: username, and: password)
         } else {
             errorLabel.text = LoginViewControllerConstants.signUpErrorText
         }
@@ -38,50 +38,28 @@ class LoginViewController: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        updateObservers()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        if UserDefaults.standard.bool(forKey: LoginViewControllerConstants.loggedInDefaultKey) {
-            self.performSegue(withIdentifier: LoginViewControllerConstants.homeScreenSegue, sender: nil)
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    func updateObservers() {
+        NotificationCenter.default.addObserver(self, selector: #selector(login(_:)), name: Notification.Name(loggedInNotificationKey), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(login(_:)), name: Notification.Name(signedUpNotificationKey), object: nil)
+    }
+    
+    @objc func login(_ loginNotification: NSNotification) {
+        if let loginStatusDict = loginNotification.userInfo as NSDictionary? {
+            if let loginStatus = loginStatusDict[wasSuccessfulKey] as? Bool {
+                if loginStatus {
+                    self.performSegue(withIdentifier: LoginViewControllerConstants.homeScreenSegue, sender: nil)
+                } else if let errorMessage = loginStatusDict[errorReturnedKey] as? String {
+                    errorLabel.text = errorMessage
+                }
+            }
         }
     }
-    
-    func storeUserLoginState(isLoggedIn: Bool = true) {
-        UserDefaults.standard.set(isLoggedIn, forKey: LoginViewControllerConstants.loggedInDefaultKey)
-    }
-    
-    func login(with username: String, and password: String) {
-        let loginState = AccountModel.login(with: username, and: password)
-        if loginState.success {
-            self.storeUserLoginState()
-            self.performSegue(withIdentifier: LoginViewControllerConstants.homeScreenSegue, sender: nil)
-        } else {
-            print(ParseConstants.errorbasis, loginState.error)
-            self.errorLabel.text = loginState.error
-        }
-    }
-    
-    func createUser(with username: String, and password: String) {
-        let createUserState = AccountModel.createUser(with: username, and: password)
-        if createUserState.success {
-            self.storeUserLoginState()
-            self.performSegue(withIdentifier: LoginViewControllerConstants.homeScreenSegue, sender: nil)
-        } else {
-            print(ParseConstants.errorbasis, createUserState.error)
-            self.errorLabel.text = createUserState.error
-        }
-    }
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }

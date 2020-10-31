@@ -11,8 +11,12 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
 
     @IBOutlet var feedTableView: UITableView!
     @IBAction func didLogout(_ sender: Any) {
-        UserDefaults.standard.set(false, forKey: LoginViewControllerConstants.loggedInDefaultKey)
-        self.dismiss(animated: true, completion: nil)
+//        UserDefaults.standard.set(false, forKey: LoginViewControllerConstants.loggedInDefaultKey)
+        feedModel.logout()
+        let loginViewController = storyboard?.instantiateViewController(identifier: "login") as! LoginViewController
+        loginViewController.modalPresentationStyle = .fullScreen
+        present(loginViewController, animated: false, completion: nil)
+        
     }
     
     let tableRefreshControl = UIRefreshControl()
@@ -21,19 +25,28 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
     var querySize = ParseConstants.queryLimit
     var viewHasAppeared = false
     var isDoneLoading = false
-    var numberOfPosts = -1{
-        didSet {
-            feedTableView.reloadData()
-        }
-    }
+    var numberOfPosts = -1
+    
+    private let numberOfNonCommentCellsPerPost = 2
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return max(1, numberOfPosts)
+        // comments + post + comment entry cell
+        return (feedModel.getPost(at: section)?.getNumberOfComments() ?? ((-1*numberOfNonCommentCellsPerPost) + 1)) + numberOfNonCommentCellsPerPost
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch numberOfPosts {
         case 1...:
-            return dequeFeedCell(index: indexPath.row)
+            let postIndex = indexPath.section
+            let rowIndex = indexPath.row - numberOfNonCommentCellsPerPost
+            switch rowIndex {
+            case 0 - numberOfNonCommentCellsPerPost:
+                return dequeFeedCell(index: postIndex)
+            case 1 - numberOfNonCommentCellsPerPost:
+                return dequeAddCommentCell(postIndex: postIndex)
+            default:
+                return dequeShowCommentCell(postIndex: postIndex, commentIndex: rowIndex)
+            }
         case 0:
             return dequeLoadCell(isLoaded: true)
         default:
@@ -58,10 +71,15 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
             feedModel.getPosts(queryLimit: querySize)
         }
     }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return max(1, numberOfPosts)
+    }
+    
     func dequeFeedCell(index: Int) -> FeedTableViewCell {
         let cell = feedTableView.dequeueReusableCell(withIdentifier: FeedViewControllerConstants.feedCellId) as! FeedTableViewCell
         if let post = feedModel.getPost(at: index){
-            cell.load(profileImage: nil, username: post.author.name, postImage: post.image, captionText: post.caption)
+            cell.load(profileImage: post.author.picture, username: post.author.name, postImage: post.image, captionText: post.caption)
         }
         return cell
     }
@@ -73,6 +91,20 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         } else {
             cell.startLoading()
         }
+        return cell
+    }
+    
+    func dequeShowCommentCell(postIndex: Int, commentIndex: Int) -> ShowCommentTableViewCell {
+        let cell = feedTableView.dequeueReusableCell(withIdentifier: FeedViewControllerConstants.showCommentCellId) as! ShowCommentTableViewCell
+        if let comment = feedModel.getComment(at: commentIndex, forPostAt: postIndex) {
+            cell.update(commentText: comment.text, authorName: comment.author.name, authorProfileImage: comment.author.picture)
+        }
+        return cell
+    }
+    
+    func dequeAddCommentCell(postIndex: Int) -> NewCommentTableViewCell {
+        let cell = feedTableView.dequeueReusableCell(withIdentifier: FeedViewControllerConstants.addCommentCellId) as! NewCommentTableViewCell
+        cell.id = postIndex
         return cell
     }
     
@@ -92,8 +124,24 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         tableRefreshControl.endRefreshing()
     }
     
+    @objc func updateComment(_ updateCommentNotification: NSNotification) {
+        if let textDict = updateCommentNotification.userInfo {
+            guard let text = textDict[commentTextKey] as? String else {return}
+            guard let id = textDict[idKey] as? Int else {return}
+            guard let post = feedModel.getPost(at: id) else {return}
+            guard let postId = post.objectId else {return}
+            let comment = Comment(text: text, postId: postId, author: post.author)
+            feedModel.storeComment(comment, postPosition: id)
+        }
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
     func updateObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(updatePosts), name: Notification.Name(getPostsNotificationKey), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(updateComment(_:)), name: Notification.Name(getCommentsNotificationKey), object: nil)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -113,8 +161,6 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         updateObservers()
     }
-    
-
     
     // MARK: - Navigation
 
