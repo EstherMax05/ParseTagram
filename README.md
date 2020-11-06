@@ -15,7 +15,7 @@ This is an Instagram clone with a custom Parse backend that allows a user to pos
 - [x] User can add a profile picture.
 - [x] Profile pictures are shown for posts and comments.
 
-## Video Walkthrough
+### Video Walkthrough
 
 Here's a walkthrough of implemented user stories:
 
