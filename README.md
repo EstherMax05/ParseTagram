@@ -1,5 +1,9 @@
 # ParseTagram
-This is an Instagram clone with a custom Parse backend that allows a user to post photos, view a global photos feed, and add comments! The following functionality is completed:
+
+This is an Instagram clone with a custom Parse backend that allows a user to post photos, view a global photos feed, and add comments! 
+
+----
+The following functionality is completed:
 
 - [x] User can pull to refresh.
 - [ ] User can load past tweets infinitely.
